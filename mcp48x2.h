@@ -38,9 +38,6 @@ typedef enum
 /* Low level functions to ensure SPI, NSS and LDAC managing */
 typedef struct
 {
-	/* Init hw gpio pins and microcontroller interface */
-	mcp48x2_ret_t (*interface_init)(void);
-
 	/* Manage NSS pin */
 	void (*nss_set)(void);
 	void (*nss_reset)(void);
