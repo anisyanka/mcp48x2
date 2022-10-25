@@ -5,11 +5,11 @@
 #define REF_VOLTAGE_MV 2048
 
 #if defined(DAC_TYPE_MCP4822)
- #define MAX_OUT_VALUE (4096)
+ #define MAX_OUT_VALUE (4095)
 #elif defined(DAC_TYPE_MCP4812)
- #define MAX_OUT_VALUE (1024)
+ #define MAX_OUT_VALUE (1023)
 #elif defined(DAC_TYPE_MCP4802)
- #define MAX_OUT_VALUE (256)
+ #define MAX_OUT_VALUE (255)
 #else
  #error "Please, define DAC type"
 #endif
@@ -113,21 +113,17 @@ mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
 
 	toggle_ldac(ll);
 
-	dev->ch_a_val = 0;
-	dev->ch_b_val = 0;
 	dev->ll = ll;
 
 	if (ch == MCP48X2_DAC_CH_A)
 	{
+		dev->ch_a_val = 0;
 		dev->mode_ch_a = mode;
 		dev->mode_gain_ch_a = gain;
-		dev->mode_ch_b = 0;
-		dev->mode_gain_ch_b = 0;
 	}
 	else if (ch == MCP48X2_DAC_CH_B)
 	{
-		dev->mode_ch_a = 0;
-		dev->mode_gain_ch_a = 0;
+		dev->ch_b_val = 0;
 		dev->mode_ch_b = mode;
 		dev->mode_gain_ch_b = gain;
 	}
@@ -140,8 +136,8 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
 
 {
 	uint16_t data = val;
-	uint16_t gain = 0;
-	uint16_t mode = 0;
+	mcp48x2_gain_t gain = 0;
+	mcp48x2_ch_mode_t mode = 0;
 
 	if (!dev || val > MAX_OUT_VALUE)
 	{
@@ -160,6 +156,15 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
 	}
 
 	toggle_ldac(dev->ll);
+
+	if (ch == MCP48X2_DAC_CH_A)
+	{
+		dev->ch_a_val = val;
+	}
+	else if (ch == MCP48X2_DAC_CH_B)
+	{
+		dev->ch_b_val = val;
+	}
 
 	return MCP48X2_OK;
 }
