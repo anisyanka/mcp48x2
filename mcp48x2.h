@@ -24,8 +24,8 @@ typedef enum
 /* constants for gain factor for output voltage */
 typedef enum
 {
-	MCP48X2_GAIN_1X = 0,
-	MCP48X2_GAIN_2X = 1,
+	MCP48X2_GAIN_2X = 0,
+	MCP48X2_GAIN_1X = 1,
 } mcp48x2_gain_t;
 
 /* Possible return values */
