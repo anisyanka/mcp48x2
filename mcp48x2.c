@@ -41,14 +41,25 @@ static void toggle_ldac(mcp48x2_ll_t *ll)
 	ll->ldac_set();
 }
 
-mcp48x2_ret_t mcp48x2_default_init(mcp48x2_device_t *dev, mcp48x2_ll_t *ll)
+/* Returns 0 in good case */
+static int check_args_for_nulls(mcp48x2_device_t *dev, mcp48x2_ll_t *ll)
 {
-	uint16_t data = 0;
-
 	if (!dev || !ll || !ll->delay_us ||
 		!ll->ldac_reset || !ll->ldac_set ||
 		!ll->nss_set || !ll->nss_reset ||
 		!ll->spi_write_packet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+mcp48x2_ret_t mcp48x2_default_init(mcp48x2_device_t *dev, mcp48x2_ll_t *ll)
+{
+	uint16_t data = 0;
+
+	if (check_args_for_nulls(dev, ll))
 	{
 		return MCP48X2_FAIL;
 	}
@@ -77,6 +88,49 @@ mcp48x2_ret_t mcp48x2_default_init(mcp48x2_device_t *dev, mcp48x2_ll_t *ll)
 	dev->mode_ch_b = MCP48X2_CH_ACTIVE;
 	dev->mode_gain_ch_a = MCP48X2_GAIN_2X;
 	dev->mode_gain_ch_b = MCP48X2_GAIN_2X;
+
+	return MCP48X2_OK;
+}
+
+mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
+                                   mcp48x2_ch_t ch, mcp48x2_ch_mode_t mode,
+                                   mcp48x2_gain_t gain)
+{
+	uint16_t data = 0;
+
+	if (check_args_for_nulls(dev, ll))
+	{
+		return MCP48X2_FAIL;
+	}
+
+	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
+			 ((uint16_t)gain << GAIN_BIT_POS) | \
+			 ((uint16_t)mode << SHDN_BIT_POS));
+	if (write_packet(ll, data) == MCP48X2_FAIL)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	toggle_ldac(ll);
+
+	dev->ch_a_val = 0;
+	dev->ch_b_val = 0;
+	dev->ll = ll;
+
+	if (ch == MCP48X2_DAC_CH_A)
+	{
+		dev->mode_ch_a = mode;
+		dev->mode_gain_ch_a = gain;
+		dev->mode_ch_b = 0;
+		dev->mode_gain_ch_b = 0;
+	}
+	else if (ch == MCP48X2_DAC_CH_B)
+	{
+		dev->mode_ch_a = 0;
+		dev->mode_gain_ch_a = 0;
+		dev->mode_ch_b = mode;
+		dev->mode_gain_ch_b = gain;
+	}
 
 	return MCP48X2_OK;
 }
