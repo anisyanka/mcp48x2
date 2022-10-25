@@ -70,15 +70,15 @@ typedef struct
  * Also the function fill in mcp48x2_device_t structure with
  * corresponding values.
  *
- * Funciton returns 'MCP48X2_OK' in case of success.
+ * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_default_init(mcp48x2_device_t *dev, mcp48x2_ll_t *ll);
 
 /**
- * Init particular channel.
- * If you use this function for channels, don't mcp48x2_default_init().
+ * Init particular channel. Call this function for each channel.
+ * If you use this function for channels, don't use the 'mcp48x2_default_init()'.
  *
- * Funciton returns 'MCP48X2_OK' in case of success.
+ * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
                                    mcp48x2_ch_t ch, mcp48x2_ch_mode_t mode,
@@ -86,6 +86,8 @@ mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
 
 /**
  * Change channel mode of work to active or shutdown.
+ *
+ * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_change_channel_mode(mcp48x2_device_t *dev,
                                           mcp48x2_ch_t ch,
@@ -93,6 +95,8 @@ mcp48x2_ret_t mcp48x2_change_channel_mode(mcp48x2_device_t *dev,
 
 /**
  * Change channel gain factor to 1x or 2x.
+ *
+ * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_change_channel_gain(mcp48x2_device_t *dev,
                                           mcp48x2_ch_t ch,
@@ -105,10 +109,12 @@ mcp48x2_ret_t mcp48x2_change_channel_gain(mcp48x2_device_t *dev,
  * Formula: Vout = (2048 * val * G) / 2^(resolution)
  *
  * 	2048 - internal reference voltage
- *  G - gain factor
+ * 	G - gain factor
  * 	val = [0 - 4096] for MCP4922
  *	val = [0 - 1024] for MCP4912
  *	val = [0 - 256]  for MCP4902
+ *
+ * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
                                         mcp48x2_ch_t ch, uint16_t val);
@@ -120,10 +126,12 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
  * Formula: Vout = (2048 * val * G) / 2^(resolution)
  *
  * 	2048 - internal reference voltage
- *  G - gain factor
+ *	G - gain factor
  * 	val = [0 - 4096] for MCP4922
  *	val = [0 - 1024] for MCP4912
  *	val = [0 - 256]  for MCP4902
+ *
+ * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_set_channel_values_sync(mcp48x2_device_t *dev,
                                               uint16_t ch_a, uint16_t ch_b);
