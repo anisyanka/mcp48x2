@@ -5,11 +5,11 @@
 #define REF_VOLTAGE_MV 2048
 
 #if defined(DAC_TYPE_MCP4822)
- #define MAX_OUT_VALUE (4096UI)
+ #define MAX_OUT_VALUE (4096)
 #elif defined(DAC_TYPE_MCP4812)
- #define MAX_OUT_VALUE (1024UI)
+ #define MAX_OUT_VALUE (1024)
 #elif defined(DAC_TYPE_MCP4802)
- #define MAX_OUT_VALUE (256UI)
+ #define MAX_OUT_VALUE (256)
 #else
  #error "Please, define DAC type"
 #endif
@@ -131,6 +131,35 @@ mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
 		dev->mode_ch_b = mode;
 		dev->mode_gain_ch_b = gain;
 	}
+
+	return MCP48X2_OK;
+}
+
+mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
+                                        mcp48x2_ch_t ch, uint16_t val)
+
+{
+	uint16_t data = val;
+	uint16_t gain = 0;
+	uint16_t mode = 0;
+
+	if (!dev || val > MAX_OUT_VALUE)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	gain = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_gain_ch_a) : (dev->mode_gain_ch_b);
+	mode = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_ch_a) : (dev->mode_ch_b);
+
+	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
+			 ((uint16_t)gain << GAIN_BIT_POS) | \
+			 ((uint16_t)mode << SHDN_BIT_POS));
+	if (write_packet(dev->ll, data) == MCP48X2_FAIL)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	toggle_ldac(dev->ll);
 
 	return MCP48X2_OK;
 }
