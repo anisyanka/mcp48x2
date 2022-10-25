@@ -55,8 +55,8 @@ typedef struct
 {
 	mcp48x2_ch_mode_t mode_ch_a;
 	mcp48x2_ch_mode_t mode_ch_b;
-	mcp48x2_gain_t mode_gain_ch_a;
-	mcp48x2_gain_t mode_gain_ch_b;
+	mcp48x2_gain_t gain_ch_a;
+	mcp48x2_gain_t gain_ch_b;
 	uint16_t ch_a_val;
 	uint16_t ch_b_val;
 	mcp48x2_ll_t *ll;
@@ -85,22 +85,22 @@ mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
                                    mcp48x2_gain_t gain);
 
 /**
- * Change channel mode of work to active or shutdown.
+ * Set channel mode of work to active or shutdown.
  *
  * Function returns 'MCP48X2_OK' in case of success.
  */
-mcp48x2_ret_t mcp48x2_change_channel_mode(mcp48x2_device_t *dev,
-                                          mcp48x2_ch_t ch,
-                                          mcp48x2_ch_mode_t mode);
+mcp48x2_ret_t mcp48x2_set_channel_mode(mcp48x2_device_t *dev,
+                                       mcp48x2_ch_t ch,
+                                       mcp48x2_ch_mode_t mode);
 
 /**
- * Change channel gain factor to 1x or 2x.
+ * Set channel gain factor to 1x or 2x.
  *
  * Function returns 'MCP48X2_OK' in case of success.
  */
-mcp48x2_ret_t mcp48x2_change_channel_gain(mcp48x2_device_t *dev,
-                                          mcp48x2_ch_t ch,
-                                          mcp48x2_gain_t gain);
+mcp48x2_ret_t mcp48x2_set_channel_gain(mcp48x2_device_t *dev,
+                                       mcp48x2_ch_t ch,
+                                       mcp48x2_gain_t gain);
 
 /**
  * Write value to output register for one channel and toggle the LDAC pin.
@@ -134,7 +134,8 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
  * Function returns 'MCP48X2_OK' in case of success.
  */
 mcp48x2_ret_t mcp48x2_set_channel_values_sync(mcp48x2_device_t *dev,
-                                              uint16_t ch_a, uint16_t ch_b);
+                                              uint16_t val_ch_a,
+                                              uint16_t val_ch_b);
 
 #ifdef __cplusplus
 }

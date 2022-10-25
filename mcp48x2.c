@@ -86,8 +86,8 @@ mcp48x2_ret_t mcp48x2_default_init(mcp48x2_device_t *dev, mcp48x2_ll_t *ll)
 	dev->ll = ll;
 	dev->mode_ch_a = MCP48X2_CH_ACTIVE;
 	dev->mode_ch_b = MCP48X2_CH_ACTIVE;
-	dev->mode_gain_ch_a = MCP48X2_GAIN_2X;
-	dev->mode_gain_ch_b = MCP48X2_GAIN_2X;
+	dev->gain_ch_a = MCP48X2_GAIN_2X;
+	dev->gain_ch_b = MCP48X2_GAIN_2X;
 
 	return MCP48X2_OK;
 }
@@ -119,13 +119,13 @@ mcp48x2_ret_t mcp48x2_init_channel(mcp48x2_device_t *dev, mcp48x2_ll_t *ll,
 	{
 		dev->ch_a_val = 0;
 		dev->mode_ch_a = mode;
-		dev->mode_gain_ch_a = gain;
+		dev->gain_ch_a = gain;
 	}
 	else if (ch == MCP48X2_DAC_CH_B)
 	{
 		dev->ch_b_val = 0;
 		dev->mode_ch_b = mode;
-		dev->mode_gain_ch_b = gain;
+		dev->gain_ch_b = gain;
 	}
 
 	return MCP48X2_OK;
@@ -144,7 +144,7 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
 		return MCP48X2_FAIL;
 	}
 
-	gain = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_gain_ch_a) : (dev->mode_gain_ch_b);
+	gain = (ch == MCP48X2_DAC_CH_A) ? (dev->gain_ch_a) : (dev->gain_ch_b);
 	mode = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_ch_a) : (dev->mode_ch_b);
 
 	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
