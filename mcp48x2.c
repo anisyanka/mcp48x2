@@ -212,6 +212,28 @@ mcp48x2_ret_t mcp48x2_set_channel_gain(mcp48x2_device_t *dev,
 		return MCP48X2_FAIL;
 	}
 
+	uint16_t data = (ch == MCP48X2_DAC_CH_A) ? (dev->ch_a_val) : (dev->ch_b_val);
+	mcp48x2_ch_mode_t mode = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_ch_a) : (dev->mode_ch_b);
+
+	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
+			 ((uint16_t)gain << GAIN_BIT_POS) | \
+			 ((uint16_t)mode << SHDN_BIT_POS));
+	if (write_packet(dev->ll, data) == MCP48X2_FAIL)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	toggle_ldac(dev->ll);
+
+	if (ch == MCP48X2_DAC_CH_A)
+	{
+		dev->gain_ch_a = gain;
+	}
+	else if (ch == MCP48X2_DAC_CH_B)
+	{
+		dev->gain_ch_b = gain;
+	}
+
 	return MCP48X2_OK;
 }
 
