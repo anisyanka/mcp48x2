@@ -241,36 +241,42 @@ mcp48x2_ret_t mcp48x2_set_channel_values_sync(mcp48x2_device_t *dev,
                                               uint16_t val_ch_a,
                                               uint16_t val_ch_b)
 {
-	if (!dev)
+	if (!dev || val_ch_a > MAX_OUT_VALUE || val_ch_b > MAX_OUT_VALUE)
 	{
 		return MCP48X2_FAIL;
 	}
 
-	// uint16_t data_a = val_ch_a;
-	// uint16_t data_b = val_ch_b;
+	uint16_t data_a = val_ch_a;
+	uint16_t data_b = val_ch_b;
 
-	// mcp48x2_gain_t gain_a = 0;
-	// mcp48x2_gain_t gain_b = 0;
+	mcp48x2_gain_t gain_a = dev->gain_ch_a;
+	mcp48x2_gain_t gain_b = dev->gain_ch_b;
 
-	// mcp48x2_ch_mode_t mode_a = 0;
-	// mcp48x2_ch_mode_t mode_b = 0;
+	mcp48x2_ch_mode_t mode_a = dev->mode_ch_a;
+	mcp48x2_ch_mode_t mode_b = dev->mode_ch_b;
 
-	// /* channel A */
-	// data |= ((uint16_t)MCP48X2_CH_ACTIVE << SHDN_BIT_POS);
-	// if (write_packet(ll, data) == MCP48X2_FAIL)
-	// {
-	// 	return MCP48X2_FAIL;
-	// }
+	/* channel A */
+	data_a |= (((uint16_t)MCP48X2_DAC_CH_A << CHANNEL_BIT_POS) | \
+				((uint16_t)gain_a << GAIN_BIT_POS) | \
+				((uint16_t)mode_a << SHDN_BIT_POS));
+	if (write_packet(dev->ll, data_a) == MCP48X2_FAIL)
+	{
+		return MCP48X2_FAIL;
+	}
 
-	// /* channel B */
-	// data |= ((uint16_t)MCP48X2_DAC_CH_B << CHANNEL_BIT_POS) | //*&\*/
-	// 		((uint16_t)MCP48X2_CH_ACTIVE << SHDN_BIT_POS);
-	// if (write_packet(ll, data) == MCP48X2_FAIL)
-	// {
-	// 	return MCP48X2_FAIL;
-	// }
+	/* channel B */
+	data_b |= (((uint16_t)MCP48X2_DAC_CH_B << CHANNEL_BIT_POS) | \
+				((uint16_t)gain_b << GAIN_BIT_POS) | \
+				((uint16_t)mode_b << SHDN_BIT_POS));
+	if (write_packet(dev->ll, data_b) == MCP48X2_FAIL)
+	{
+		return MCP48X2_FAIL;
+	}
 
-	// toggle_ldac(ll);
+	toggle_ldac(dev->ll);
+
+	dev->ch_a_val = val_ch_a;
+	dev->ch_b_val = val_ch_b;
 
 	return MCP48X2_OK;
 }
