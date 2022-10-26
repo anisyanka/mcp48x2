@@ -5,7 +5,7 @@
 ```bash
 git submodule add git@github.com:anisyanka/mcp48x2.git /third/party/folder
 ```
-**2. Add defenition for a DAC type and sources**
+**2. Add definition for a DAC type and sources**
 ```make
 # C defines
 C_DEFS += -DDAC_TYPE_MCP4822
@@ -25,9 +25,9 @@ Default setup is:
 
 You can use other init function from the header file if the default setup doesn't fit you. 
 
-`dev` - describes one instance of your DACs on your board. The board can contain plenty of DACs. This param helps you to control each instance separetally.
+`dev` - describes one instance of your DACs on your board. The board can contain plenty of DACs. This param helps you to control each instance separately.
 
-`ll` - describes low level functions to allow the library to contorl hardware. In this case to control GPIOs and SPI. It looks like this:
+`ll` - describes low level functions to allow the library to control hardware. In this case to control GPIOs and SPI. It looks like this:
 ```C
 typedef struct
 {
@@ -49,7 +49,7 @@ The lib is able to work on different hardwares with the help of this.
 
 **4. Enjoy using the DAC**
 
-Sey output voltage with the help of:
+Set output voltage with the help of:
 ```
 mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
                                         mcp48x2_ch_t ch, uint16_t val);

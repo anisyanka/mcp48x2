@@ -51,6 +51,7 @@ typedef struct
 	mcp48x2_ret_t (*spi_write_packet)(uint16_t data);
 } mcp48x2_ll_t;
 
+/* One instance of DAC */
 typedef struct
 {
 	mcp48x2_ch_mode_t mode_ch_a;
@@ -104,15 +105,15 @@ mcp48x2_ret_t mcp48x2_set_channel_gain(mcp48x2_device_t *dev,
 
 /**
  * Write value to output register for one channel and toggle the LDAC pin.
- * Other channel is stayed unchangeble
+ * Other channel is stayed unchangeable
  *
  * Formula: Vout = (2048 * val * G) / 2^(resolution)
  *
  * 	2048 - internal reference voltage
  * 	G - gain factor
- * 	val = [0 - 4096] for MCP4922
- *	val = [0 - 1024] for MCP4912
- *	val = [0 - 256]  for MCP4902
+ * 	val = [0 - 4095] for MCP4922
+ *	val = [0 - 1023] for MCP4912
+ *	val = [0 - 255]  for MCP4902
  *
  * Function returns 'MCP48X2_OK' in case of success.
  */
@@ -121,7 +122,7 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
 
 /**
  * Write values to output registers for both channels
- * and toggle theLDAC pin to synchronize setting the values.
+ * and toggle the LDAC pin to synchronize setting the values.
  *
  * Formula: Vout = (2048 * val * G) / 2^(resolution)
  *
