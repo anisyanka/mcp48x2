@@ -6,10 +6,13 @@
 
 #if defined(DAC_TYPE_MCP4822)
  #define MAX_OUT_VALUE (4095)
+ #define SHIFT_BITS_CNT (0)
 #elif defined(DAC_TYPE_MCP4812)
  #define MAX_OUT_VALUE (1023)
+ #define SHIFT_BITS_CNT (2)
 #elif defined(DAC_TYPE_MCP4802)
  #define MAX_OUT_VALUE (255)
+ #define SHIFT_BITS_CNT (4)
 #else
  #error "Please, define DAC type"
 #endif
@@ -147,6 +150,7 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
 	gain = (ch == MCP48X2_DAC_CH_A) ? (dev->gain_ch_a) : (dev->gain_ch_b);
 	mode = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_ch_a) : (dev->mode_ch_b);
 
+	data <<= SHIFT_BITS_CNT;
 	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
 			 ((uint16_t)gain << GAIN_BIT_POS) | \
 			 ((uint16_t)mode << SHDN_BIT_POS));
@@ -181,6 +185,7 @@ mcp48x2_ret_t mcp48x2_set_channel_mode(mcp48x2_device_t *dev,
 	uint16_t data = (ch == MCP48X2_DAC_CH_A) ? (dev->ch_a_val) : (dev->ch_b_val);
 	mcp48x2_gain_t gain = (ch == MCP48X2_DAC_CH_A) ? (dev->gain_ch_a) : (dev->gain_ch_b);
 
+	data <<= SHIFT_BITS_CNT;
 	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
 			 ((uint16_t)gain << GAIN_BIT_POS) | \
 			 ((uint16_t)mode << SHDN_BIT_POS));
@@ -215,6 +220,7 @@ mcp48x2_ret_t mcp48x2_set_channel_gain(mcp48x2_device_t *dev,
 	uint16_t data = (ch == MCP48X2_DAC_CH_A) ? (dev->ch_a_val) : (dev->ch_b_val);
 	mcp48x2_ch_mode_t mode = (ch == MCP48X2_DAC_CH_A) ? (dev->mode_ch_a) : (dev->mode_ch_b);
 
+	data <<= SHIFT_BITS_CNT;
 	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
 			 ((uint16_t)gain << GAIN_BIT_POS) | \
 			 ((uint16_t)mode << SHDN_BIT_POS));
@@ -256,6 +262,7 @@ mcp48x2_ret_t mcp48x2_set_channel_values_sync(mcp48x2_device_t *dev,
 	mcp48x2_ch_mode_t mode_b = dev->mode_ch_b;
 
 	/* channel A */
+	data_a <<= SHIFT_BITS_CNT;
 	data_a |= (((uint16_t)MCP48X2_DAC_CH_A << CHANNEL_BIT_POS) | \
 				((uint16_t)gain_a << GAIN_BIT_POS) | \
 				((uint16_t)mode_a << SHDN_BIT_POS));
@@ -265,6 +272,7 @@ mcp48x2_ret_t mcp48x2_set_channel_values_sync(mcp48x2_device_t *dev,
 	}
 
 	/* channel B */
+	data_b <<= SHIFT_BITS_CNT;
 	data_b |= (((uint16_t)MCP48X2_DAC_CH_B << CHANNEL_BIT_POS) | \
 				((uint16_t)gain_b << GAIN_BIT_POS) | \
 				((uint16_t)mode_b << SHDN_BIT_POS));
