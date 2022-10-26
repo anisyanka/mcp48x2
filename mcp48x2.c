@@ -168,3 +168,87 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
 
 	return MCP48X2_OK;
 }
+
+mcp48x2_ret_t mcp48x2_set_channel_mode(mcp48x2_device_t *dev,
+                                       mcp48x2_ch_t ch,
+                                       mcp48x2_ch_mode_t mode)
+{
+	if (!dev)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	uint16_t data = (ch == MCP48X2_DAC_CH_A) ? (dev->ch_a_val) : (dev->ch_b_val);
+	mcp48x2_gain_t gain = (ch == MCP48X2_DAC_CH_A) ? (dev->gain_ch_a) : (dev->gain_ch_b);
+
+	data |= (((uint16_t)ch << CHANNEL_BIT_POS) | \
+			 ((uint16_t)gain << GAIN_BIT_POS) | \
+			 ((uint16_t)mode << SHDN_BIT_POS));
+	if (write_packet(dev->ll, data) == MCP48X2_FAIL)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	toggle_ldac(dev->ll);
+
+	if (ch == MCP48X2_DAC_CH_A)
+	{
+		dev->mode_ch_a = mode;
+	}
+	else if (ch == MCP48X2_DAC_CH_B)
+	{
+		dev->mode_ch_b = mode;
+	}
+
+	return MCP48X2_OK;
+}
+
+mcp48x2_ret_t mcp48x2_set_channel_gain(mcp48x2_device_t *dev,
+                                       mcp48x2_ch_t ch,
+                                       mcp48x2_gain_t gain)
+{
+	if (!dev)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	return MCP48X2_OK;
+}
+
+mcp48x2_ret_t mcp48x2_set_channel_values_sync(mcp48x2_device_t *dev,
+                                              uint16_t val_ch_a,
+                                              uint16_t val_ch_b)
+{
+	if (!dev)
+	{
+		return MCP48X2_FAIL;
+	}
+
+	// uint16_t data_a = val_ch_a;
+	// uint16_t data_b = val_ch_b;
+
+	// mcp48x2_gain_t gain_a = 0;
+	// mcp48x2_gain_t gain_b = 0;
+
+	// mcp48x2_ch_mode_t mode_a = 0;
+	// mcp48x2_ch_mode_t mode_b = 0;
+
+	// /* channel A */
+	// data |= ((uint16_t)MCP48X2_CH_ACTIVE << SHDN_BIT_POS);
+	// if (write_packet(ll, data) == MCP48X2_FAIL)
+	// {
+	// 	return MCP48X2_FAIL;
+	// }
+
+	// /* channel B */
+	// data |= ((uint16_t)MCP48X2_DAC_CH_B << CHANNEL_BIT_POS) | //*&\*/
+	// 		((uint16_t)MCP48X2_CH_ACTIVE << SHDN_BIT_POS);
+	// if (write_packet(ll, data) == MCP48X2_FAIL)
+	// {
+	// 	return MCP48X2_FAIL;
+	// }
+
+	// toggle_ldac(ll);
+
+	return MCP48X2_OK;
+}
