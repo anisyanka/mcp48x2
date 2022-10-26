@@ -127,9 +127,9 @@ mcp48x2_ret_t mcp48x2_set_channel_value(mcp48x2_device_t *dev,
  *
  * 	2048 - internal reference voltage
  *	G - gain factor
- * 	val = [0 - 4096] for MCP4922
- *	val = [0 - 1024] for MCP4912
- *	val = [0 - 256]  for MCP4902
+ * 	val = [0 - 4095] for MCP4922
+ *	val = [0 - 1023] for MCP4912
+ *	val = [0 - 255]  for MCP4902
  *
  * Function returns 'MCP48X2_OK' in case of success.
  */
